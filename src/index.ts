@@ -1,6 +1,7 @@
 import cors from "cors"
 import dotenv from "dotenv"
 import express, { NextFunction, Request, Response } from "express"
+import billsRouter from './bill.routes'
 
 dotenv.config()
 const app = express()
@@ -36,11 +37,15 @@ app.set('trust proxy', 1);
 app.get("/favicon.ico", (_, res) => res.status(204).end())
 app.use(cors())
 
+app.use("/webhook", express.json({ type: "application/json" }), webhook)
+
+app.use(express.json());
+
+app.use("/api/bills", billsRouter);
+
 app.get('/', (_, res: Response) => {
   res.send('hello world');
 })
-
-app.use("/webhook", express.json({ type: "application/json" }), webhook)
 
 app.use(notFound)
 
